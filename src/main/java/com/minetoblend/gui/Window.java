@@ -13,9 +13,9 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Window {
 
-    private final ObservableProperty<Vector2i> size = new ObservableProperty<>(new Vector2i(800, 600));
-    private final ObservableProperty<Vector2i> position = new ObservableProperty<>(new Vector2i());
-    private final ObservableProperty<Boolean> isVisible = new ObservableProperty<>(false);
+    public final ObservableProperty<Vector2i> size = new ObservableProperty<>(new Vector2i(800, 600));
+    public final ObservableProperty<Vector2i> position = new ObservableProperty<>(new Vector2i());
+    public final ObservableProperty<Boolean> isVisible = new ObservableProperty<>(false);
     private final Thread thread;
     ArrayDeque<Runnable> queue = new ArrayDeque<>();
     private long window;
@@ -52,7 +52,7 @@ public class Window {
         glfwSwapInterval(1);
 
         if (GuiConfig.renderMode == GuiConfig.OPENGL) {
-            renderer = new GLRenderer();
+            renderer = new GLRenderer(this);
         }
 
         renderer.init();
@@ -87,9 +87,7 @@ public class Window {
 
     public void setSize(Vector2i size) {
         this.size.set(size);
-        queue.addLast(() -> {
-            glfwSetWindowSize(window, size.x, size.y);
-        });
+        queue.addLast(() -> glfwSetWindowSize(window, size.x, size.y));
     }
 
     public Vector2i getPosition() {
