@@ -1,12 +1,12 @@
 package com.minetoblend.gui;
 
+import com.minetoblend.gui.render.Renderer;
 import com.minetoblend.gui.types.ObservableProperty;
 import org.joml.Vector2i;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryUtil;
 
 import java.util.ArrayDeque;
-import java.util.ConcurrentModificationException;
 
 import static org.lwjgl.glfw.GLFW.*;
 
