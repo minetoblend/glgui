@@ -8,6 +8,7 @@ public class SampleApp {
 
         var window = new Window();
 
+        window.setVisible(true);
 
     }
 

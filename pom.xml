@@ -93,15 +93,17 @@
             <version>${lwjgl.version}</version>
             <classifier>${lwjgl.natives}</classifier>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.joml/joml -->
         <dependency>
-            <groupId>com.code-disaster.steamworks4j</groupId>
-            <artifactId>steamworks4j</artifactId>
-            <version>${steamworks4j.version}</version>
+            <groupId>org.joml</groupId>
+            <artifactId>joml</artifactId>
+            <version>1.9.12</version>
         </dependency>
         <dependency>
-            <groupId>com.code-disaster.steamworks4j</groupId>
-            <artifactId>steamworks4j-server</artifactId>
-            <version>${steamworks4j-server.version}</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.3.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     
