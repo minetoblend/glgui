@@ -1,23 +1,25 @@
 package com.minetoblend.gui;
 
+import com.minetoblend.gui.render.Renderer;
+import com.minetoblend.gui.render.gl.GLRenderer;
 import com.minetoblend.gui.types.ObservableProperty;
 import org.joml.Vector2i;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryUtil;
 
 import java.util.ArrayDeque;
-import java.util.ConcurrentModificationException;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Window {
 
-    private final ObservableProperty<Vector2i> size = new ObservableProperty<>(new Vector2i(800, 600));
-    private final ObservableProperty<Vector2i> position = new ObservableProperty<>(new Vector2i());
-    private final ObservableProperty<Boolean> isVisible = new ObservableProperty<>(false);
+    public final ObservableProperty<Vector2i> size = new ObservableProperty<>(new Vector2i(800, 600));
+    public final ObservableProperty<Vector2i> position = new ObservableProperty<>(new Vector2i());
+    public final ObservableProperty<Boolean> isVisible = new ObservableProperty<>(false);
     private final Thread thread;
     ArrayDeque<Runnable> queue = new ArrayDeque<>();
     private long window;
+    private Renderer renderer;
 
     public Window() {
 
@@ -50,8 +52,10 @@ public class Window {
         glfwSwapInterval(1);
 
         if (GuiConfig.renderMode == GuiConfig.OPENGL) {
-            GL.createCapabilities();
+            renderer = new GLRenderer(this);
         }
+
+        renderer.init();
 
     }
 
@@ -71,11 +75,19 @@ public class Window {
             queue.removeFirst().run();
         }
         glfwPollEvents();
+
+        if (renderer.shouldRender())
+            renderer.render();
     }
 
 
     public Vector2i getSize() {
         return size.get();
+    }
+
+    public void setSize(Vector2i size) {
+        this.size.set(size);
+        queue.addLast(() -> glfwSetWindowSize(window, size.x, size.y));
     }
 
     public Vector2i getPosition() {

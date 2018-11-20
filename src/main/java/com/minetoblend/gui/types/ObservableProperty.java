@@ -19,6 +19,10 @@ public class ObservableProperty<T> {
         notifyListeners(newValue, oldValue);
     }
 
+    public void setWithoutNotice(T newValue) {
+        value = newValue;
+    }
+
     public T get() {
         return value;
     }
@@ -29,23 +33,22 @@ public class ObservableProperty<T> {
         }
     }
 
-    private void subscribe(Listener<T> listener) {
+    public void subscribe(Listener<T> listener) {
         listeners.add(listener);
     }
 
-    private void unsubscribe(Listener<T> listener) {
+    public void unsubscribe(Listener<T> listener) {
         listeners.remove(listener);
-    }
-
-
-    interface Listener<T> {
-
-        void onValueChange(T newValue, T oldValue, ObservableProperty<T> property);
-
     }
 
     @Override
     public String toString() {
         return value.toString();
+    }
+
+    public interface Listener<T> {
+
+        void onValueChange(T newValue, T oldValue, ObservableProperty<T> property);
+
     }
 }
