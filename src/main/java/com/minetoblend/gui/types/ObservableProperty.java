@@ -13,10 +13,14 @@ public class ObservableProperty<T> {
         this.value = initialValue;
     }
 
-    void set(T newValue) {
+    public void set(T newValue) {
         var oldValue = this.value;
         value = newValue;
         notifyListeners(newValue, oldValue);
+    }
+
+    public T get() {
+        return value;
     }
 
     private void notifyListeners(T newValue, T oldValue) {
@@ -33,10 +37,6 @@ public class ObservableProperty<T> {
         listeners.remove(listener);
     }
 
-    T get() {
-        return value;
-    }
-
 
     interface Listener<T> {
 
@@ -44,4 +44,8 @@ public class ObservableProperty<T> {
 
     }
 
+    @Override
+    public String toString() {
+        return value.toString();
+    }
 }
