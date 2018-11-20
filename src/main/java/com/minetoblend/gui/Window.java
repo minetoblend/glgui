@@ -1,6 +1,7 @@
 package com.minetoblend.gui;
 
 import com.minetoblend.gui.render.Renderer;
+import com.minetoblend.gui.render.gl.GLRenderer;
 import com.minetoblend.gui.types.ObservableProperty;
 import org.joml.Vector2i;
 import org.lwjgl.opengl.GL;
@@ -51,8 +52,10 @@ public class Window {
         glfwSwapInterval(1);
 
         if (GuiConfig.renderMode == GuiConfig.OPENGL) {
-            GL.createCapabilities();
+            renderer = new GLRenderer();
         }
+
+        renderer.init();
 
     }
 
@@ -72,6 +75,9 @@ public class Window {
             queue.removeFirst().run();
         }
         glfwPollEvents();
+
+        if (renderer.shouldRender())
+            renderer.render();
     }
 
 
