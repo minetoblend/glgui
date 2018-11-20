@@ -2,7 +2,11 @@ package com.minetoblend.gui;
 
 import com.minetoblend.gui.types.ObservableProperty;
 import org.joml.Vector2i;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryUtil;
+
+import java.util.ArrayDeque;
+import java.util.ConcurrentModificationException;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -12,11 +16,12 @@ public class Window {
     private final ObservableProperty<Vector2i> position = new ObservableProperty<>(new Vector2i());
     private final ObservableProperty<Boolean> isVisible = new ObservableProperty<>(false);
     private final Thread thread;
+    ArrayDeque<Runnable> queue = new ArrayDeque<>();
     private long window;
 
     public Window() {
 
-        thread = new Thread(this::init);
+        thread = new Thread(this::run);
         thread.start();
 
     }
@@ -27,12 +32,45 @@ public class Window {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_SAMPLES, 4);
+
+
         window = glfwCreateWindow(size.get().x, size.get().y, "Hello World!", MemoryUtil.NULL, MemoryUtil.NULL);
 
         if (window == MemoryUtil.NULL)
             throw new RuntimeException("Failed to create the GLFW window");
 
+        createRenderer();
 
+    }
+
+    private void createRenderer() {
+
+        glfwMakeContextCurrent(window);
+        glfwSwapInterval(1);
+
+        if (GuiConfig.renderMode == GuiConfig.OPENGL) {
+            GL.createCapabilities();
+        }
+
+    }
+
+    void run() {
+
+        init();
+
+        while (!glfwWindowShouldClose(window)) {
+            update();
+            glfwSwapBuffers(window);
+        }
+
+    }
+
+    void update() {
+        for (Runnable runnable : queue) {
+            queue.removeFirst().run();
+        }
+        glfwPollEvents();
     }
 
 
@@ -48,7 +86,10 @@ public class Window {
         return isVisible.get();
     }
 
-    public void setVisible(boolean visible) {
+    public void setVisible(final boolean visible) {
         isVisible.set(visible);
+        queue.addLast(() -> {
+            glfwWindowHint(GLFW_VISIBLE, visible ? GLFW_TRUE : GLFW_FALSE);
+        });
     }
 }
