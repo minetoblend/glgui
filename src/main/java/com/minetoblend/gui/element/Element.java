@@ -18,12 +18,12 @@ public class Element {
     Matrix4f elementMatrix = new Matrix4f();
 
     public Element() {
-        this.position = new ObjectProperty<>(new Vector2f());
-        this.size = new ObjectProperty<>(new Vector2f());
+        this.position = new ObjectProperty<>(new Vector2f(100,100));
+        this.size = new ObjectProperty<>(new Vector2f(100, 100));
     }
 
     public Graphics getGraphics() {
-        if (graphics == null) {
+        if (graphics == null && window != null) {
             graphics = window.getRenderer().createGraphics(this);
         }
         return graphics;
@@ -31,7 +31,17 @@ public class Element {
 
     public void draw() {
 
-        
+        Graphics g = getGraphics();
+
+        g.bind();
+
+        paint(g);
+
+        g.unbind();
+
+    }
+
+    void paint(Graphics g) {
 
     }
 
@@ -47,5 +57,13 @@ public class Element {
 
     public Renderer getRenderer() {
         return this.window.getRenderer();
+    }
+
+    public float getWidth() {
+        return size.get().x;
+    }
+
+    public float getHeight() {
+        return size.get().y;
     }
 }

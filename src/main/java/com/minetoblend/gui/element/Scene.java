@@ -6,7 +6,6 @@ import com.minetoblend.gui.render.Renderer;
 public class Scene extends Element {
 
     private Element root;
-    private Window window;
 
     public Scene() {
 
@@ -14,6 +13,7 @@ public class Scene extends Element {
 
     public Scene(BasicElement root) {
         this.root = root;
+
     }
 
     public Element getRoot() {
@@ -29,12 +29,9 @@ public class Scene extends Element {
 
     @Override
     public void draw() {
-        super.draw();
+        root.draw();
     }
 
-    public Window getWindow() {
-        return window;
-    }
 
     public void setWindow(Window window) {
         this.window = window;

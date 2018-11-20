@@ -8,6 +8,7 @@ public abstract class Graphics {
 
 
 
+
     public abstract void bind();
 
     public abstract void unbind();
@@ -20,5 +21,5 @@ public abstract class Graphics {
 
     public abstract void fillCenteredRect(float x, float y, float width, float height);
 
-
+    public abstract void setColor(Color color);
 }

@@ -71,4 +71,12 @@ public class GLFbo {
     public void resize(int x, int y) {
         this.size.set(new Vector2i(x, y));
     }
+
+    public void bind() {
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
+    }
+
+    public void unbind() {
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    }
 }

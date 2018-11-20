@@ -1,4 +1,4 @@
 package com.minetoblend.gui.element;
 
-public class Container {
+public class Container extends BasicElement {
 }

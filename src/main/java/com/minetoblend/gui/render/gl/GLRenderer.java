@@ -1,9 +1,10 @@
 package com.minetoblend.gui.render.gl;
 
 import com.minetoblend.gui.Window;
+import com.minetoblend.gui.element.Element;
+import com.minetoblend.gui.render.Graphics;
 import com.minetoblend.gui.render.Renderer;
 import com.minetoblend.gui.render.Shapes;
-import com.minetoblend.gui.render.gl.geometry.GLShape2D;
 import com.minetoblend.gui.render.gl.shader.GLShader;
 import org.lwjgl.opengl.GL;
 
@@ -13,11 +14,15 @@ import static org.lwjgl.opengl.GL11C.*;
 public class GLRenderer extends Renderer {
 
 
-    private Shapes shapes;
     private GLShader shader;
 
     public GLRenderer(Window window) {
         super(window);
+    }
+
+    @Override
+    public Graphics createGraphics(Element element) {
+        return new GLGraphics(element, this);
     }
 
 
@@ -26,15 +31,26 @@ public class GLRenderer extends Renderer {
         GL.createCapabilities();
         new GLFbo(40, 40, 1);
 
-        shader = new GLShader("gui.frag");
+        setShader(new GLShader("gui.vert", "gui.frag"));
 
         shader.getProjectionMatrix().identity().ortho(0, window.getSize().x, window.getSize().y, 0, -1, 1);
 
         window.size.subscribe((newValue, oldValue, property) -> shader.getProjectionMatrix().identity().ortho(0, window.getSize().x, window.getSize().y, 0, -1, 1));
 
+        glEnable(GL_CULL_FACE);
+
         shapes = new Shapes();
 
-        glEnable(GL_CULL_FACE);
+        glLineWidth(0);
+    }
+
+    public GLShader getShader() {
+        return shader;
+    }
+
+    private void setShader(GLShader glShader) {
+        shader = glShader;
+        shader.bind();
     }
 
     @Override
@@ -53,5 +69,6 @@ public class GLRenderer extends Renderer {
 
         shader.unbind();
     }
+
 
 }
