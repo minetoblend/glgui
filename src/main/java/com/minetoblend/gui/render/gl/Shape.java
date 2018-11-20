@@ -19,5 +19,11 @@ public abstract class Shape {
         return null;
     }
 
+    public static Shape create2DShapeWireframe(float[] vertices, int[] indices) {
+        if (GuiConfig.renderMode == OPENGL)
+            return new GLShape2D(vertices, indices, true);
+        return null;
+    }
+
     public abstract void draw();
 }

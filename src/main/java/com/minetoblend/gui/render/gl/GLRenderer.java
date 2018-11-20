@@ -26,7 +26,6 @@ public class GLRenderer extends Renderer {
         GL.createCapabilities();
         new GLFbo(40, 40, 1);
 
-        //shape = new GLShape2D(new float[]{0, 0, 1, 0, 1, 1, 0, 1});
         shader = new GLShader("gui.frag");
 
         shader.getProjectionMatrix().identity().ortho(0, window.getSize().x, window.getSize().y, 0, -1, 1);
@@ -43,9 +42,15 @@ public class GLRenderer extends Renderer {
         glViewport(0, 0, window.getSize().x, window.getSize().y);
         glClearColor(0, 0, 0, 0);
         glClear(GL_COLOR_BUFFER_BIT);
-        shader.getTransformationMatrix().identity().scale(100,100,0);
+        shader.getTransformationMatrix().identity().scale(100, 100, 0);
+
         shader.bind();
-        shapes.centeredQuad.draw();
+
+        var scene = window.getScene();
+        if (scene != null) {
+            scene.draw();
+        }
+
         shader.unbind();
     }
 

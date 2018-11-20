@@ -4,8 +4,11 @@
 in vec2 p;
 
 layout(location = 100) uniform mat4 projectionMatrix;
-layout(location = 101) uniform mat4 transformationMatrix;
+layout(location = 101) uniform mat4 viewMatrix;
+layout(location = 102) uniform mat4 modelMatrix;
+
+
 
 void main(){
-    gl_Position = projectionMatrix * transformationMatrix * vec4( p, 0.0, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4( p, 0.0, 1.0);
 }

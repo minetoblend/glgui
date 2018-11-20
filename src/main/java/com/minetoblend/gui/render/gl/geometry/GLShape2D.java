@@ -54,46 +54,94 @@ public class GLShape2D extends Shape {
     }
 
     public GLShape2D(float[] vertices, int[] indices) {
-        vaoID = glGenVertexArrays();
+        this(vertices, indices, false);
+    }
 
-        mode = GL_TRIANGLES;
+    public GLShape2D(float[] vertices, int[] indices, boolean wire) {
+        if (wire) {
+            vaoID = glGenVertexArrays();
 
-        glBindVertexArray(vaoID);
-        {
+            mode = GL11.GL_LINES;
 
-            indicesID = glGenBuffers();
-
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesID);
+            glBindVertexArray(vaoID);
             {
-                IntBuffer buffer = BufferUtils.createIntBuffer(indices.length);
-                buffer.put(indices);
-                buffer.flip();
-                glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+
+                indicesID = glGenBuffers();
+
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesID);
+                {
+                    IntBuffer buffer = BufferUtils.createIntBuffer(indices.length);
+                    buffer.put(indices);
+                    buffer.flip();
+                    glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+
+                }
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+
+                vboID = glGenBuffers();
+
+                glBindBuffer(GL_ARRAY_BUFFER, vboID);
+                {
+                    FloatBuffer buffer = BufferUtils.createFloatBuffer(vertices.length);
+                    buffer.put(vertices);
+                    buffer.flip();
+                    glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+                    glVertexAttribPointer(0, 2, GL_FLOAT, false, 0, 0);
+                }
+
+
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
 
             }
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+            glBindVertexArray(0);
 
+            System.out.println(indices.length);
 
-            vboID = glGenBuffers();
+            elementCount = indices.length;
+        } else {
 
-            glBindBuffer(GL_ARRAY_BUFFER, vboID);
+            vaoID = glGenVertexArrays();
+
+            mode = GL_TRIANGLES;
+
+            glBindVertexArray(vaoID);
             {
-                FloatBuffer buffer = BufferUtils.createFloatBuffer(vertices.length);
-                buffer.put(vertices);
-                buffer.flip();
-                glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
-                glVertexAttribPointer(0, 2, GL_FLOAT, false, 0, 0);
+
+                indicesID = glGenBuffers();
+
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesID);
+                {
+                    IntBuffer buffer = BufferUtils.createIntBuffer(indices.length);
+                    buffer.put(indices);
+                    buffer.flip();
+                    glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+
+                }
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+
+                vboID = glGenBuffers();
+
+                glBindBuffer(GL_ARRAY_BUFFER, vboID);
+                {
+                    FloatBuffer buffer = BufferUtils.createFloatBuffer(vertices.length);
+                    buffer.put(vertices);
+                    buffer.flip();
+                    glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+                    glVertexAttribPointer(0, 2, GL_FLOAT, false, 0, 0);
+                }
+
+
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+
             }
+            glBindVertexArray(0);
 
+            System.out.println(indices.length);
 
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+            elementCount = indices.length;
         }
-        glBindVertexArray(0);
-
-        System.out.println(indices.length);
-
-        elementCount = indices.length;
     }
 
 

@@ -3,20 +3,23 @@ package com.minetoblend.gui.types;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObservableProperty<T> {
+public class ObjectProperty<T> {
 
     T value;
 
     List<Listener> listeners = new ArrayList<>();
 
-    public ObservableProperty(T initialValue) {
+    public ObjectProperty(T initialValue) {
         this.value = initialValue;
     }
 
     public void set(T newValue) {
         var oldValue = this.value;
         value = newValue;
-        notifyListeners(newValue, oldValue);
+        if (oldValue == null || oldValue.equals(newValue)) {
+            notifyListeners(newValue, oldValue);
+        }
+
     }
 
     public void setWithoutNotice(T newValue) {
@@ -48,7 +51,7 @@ public class ObservableProperty<T> {
 
     public interface Listener<T> {
 
-        void onValueChange(T newValue, T oldValue, ObservableProperty<T> property);
+        void onValueChange(T newValue, T oldValue, ObjectProperty<T> property);
 
     }
 }

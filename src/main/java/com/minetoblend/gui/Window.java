@@ -1,10 +1,10 @@
 package com.minetoblend.gui;
 
+import com.minetoblend.gui.element.Scene;
 import com.minetoblend.gui.render.Renderer;
 import com.minetoblend.gui.render.gl.GLRenderer;
-import com.minetoblend.gui.types.ObservableProperty;
+import com.minetoblend.gui.types.ObjectProperty;
 import org.joml.Vector2i;
-import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryUtil;
 
 import java.util.ArrayDeque;
@@ -13,12 +13,13 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Window {
 
-    public final ObservableProperty<Vector2i> size = new ObservableProperty<>(new Vector2i(800, 600));
-    public final ObservableProperty<Vector2i> position = new ObservableProperty<>(new Vector2i());
-    public final ObservableProperty<Boolean> isVisible = new ObservableProperty<>(false);
+    public final ObjectProperty<Vector2i> size = new ObjectProperty<>(new Vector2i(800, 600));
+    public final ObjectProperty<Vector2i> position = new ObjectProperty<>(new Vector2i());
+    public final ObjectProperty<Boolean> isVisible = new ObjectProperty<>(false);
     private final Thread thread;
+    private final ObjectProperty<Scene> scene = new ObjectProperty<>(null);
+    public long window;
     ArrayDeque<Runnable> queue = new ArrayDeque<>();
-    private long window;
     private Renderer renderer;
 
     public Window() {
@@ -40,10 +41,9 @@ public class Window {
         window = glfwCreateWindow(size.get().x, size.get().y, "Hello World!", MemoryUtil.NULL, MemoryUtil.NULL);
 
         if (window == MemoryUtil.NULL)
-            throw new RuntimeException("Failed to create the GLFW window");
+            throw new RuntimeException("Failed to createGraphics the GLFW window");
 
         createRenderer();
-
     }
 
     private void createRenderer() {
@@ -103,5 +103,18 @@ public class Window {
         queue.addLast(() -> {
             glfwWindowHint(GLFW_VISIBLE, visible ? GLFW_TRUE : GLFW_FALSE);
         });
+    }
+
+    public Scene getScene() {
+        return this.scene.get();
+    }
+
+    public void setScene(Scene scene) {
+        scene.setWindow(this);
+        this.scene.set(scene);
+    }
+
+    public Renderer getRenderer() {
+        return renderer;
     }
 }

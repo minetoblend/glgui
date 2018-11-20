@@ -4,8 +4,6 @@ import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Scanner;
 
 import static org.lwjgl.opengl.GL20C.*;
@@ -13,17 +11,21 @@ import static org.lwjgl.opengl.GL20C.*;
 public class GLShader {
 
     public static int PROJECTION_MATRIX_LOCATION = 100;
-    public static int TRANSFORMATION_MATRIX_LOCATION = 101;
+    public static int VIEW_MATRIX_LOCATION = 101;
+    public static int MODEL_MATRIX_LOCATION = 102;
+    public static int COLOR_LOCATION = 200;
 
+    boolean active = false;
     private Matrix4f projectionMatrix = new Matrix4f();
     private Matrix4f transformationMatrix = new Matrix4f();
+    private Matrix4f viewMatrix = new Matrix4f();
     private int program;
 
     public GLShader(String fragmentShader) {
         this("gui.vert", fragmentShader);
     }
 
-    GLShader(String vertexShader, String fragmentShader) {
+    public GLShader(String vertexShader, String fragmentShader) {
 
         int vert = loadShader(vertexShader, GL_VERTEX_SHADER);
         int frag = loadShader(fragmentShader, GL_FRAGMENT_SHADER);
@@ -56,9 +58,11 @@ public class GLShader {
 
 
     public void bind() {
+        active = true;
         glUseProgram(program);
         loadMatrix(PROJECTION_MATRIX_LOCATION, projectionMatrix);
-        loadMatrix(TRANSFORMATION_MATRIX_LOCATION, transformationMatrix);
+        loadMatrix(VIEW_MATRIX_LOCATION, viewMatrix);
+        loadMatrix(MODEL_MATRIX_LOCATION, transformationMatrix);
     }
 
     private void loadMatrix(int uniformLocation, Matrix4f matrix) {
@@ -68,6 +72,7 @@ public class GLShader {
     }
 
     public void unbind() {
+        active = false;
         glUseProgram(0);
     }
 
@@ -77,13 +82,31 @@ public class GLShader {
 
     public void setProjectionMatrix(Matrix4f projectionMatrix) {
         this.projectionMatrix = projectionMatrix;
+        if (active)
+            loadMatrix(PROJECTION_MATRIX_LOCATION, projectionMatrix);
     }
 
     public Matrix4f getTransformationMatrix() {
         return transformationMatrix;
     }
 
-    public void setTransformationMatrix(Matrix4f transformationMatrix) {
-        this.transformationMatrix = transformationMatrix;
+    public void setModelMatrix(Matrix4f matrix) {
+        this.transformationMatrix = matrix;
+        if (active)
+            loadMatrix(MODEL_MATRIX_LOCATION, matrix);
+    }
+
+    public Matrix4f getViewMatrix() {
+        return viewMatrix;
+    }
+
+    public void setViewMatrix(Matrix4f matrix) {
+        this.viewMatrix = matrix;
+        if (active)
+            loadMatrix(MODEL_MATRIX_LOCATION, matrix);
+    }
+
+    public void setColor(float[] rgba) {
+        glUniform4fv(COLOR_LOCATION, rgba);
     }
 }
