@@ -18,6 +18,7 @@ public class Window {
     private final Thread thread;
     ArrayDeque<Runnable> queue = new ArrayDeque<>();
     private long window;
+    private Renderer renderer;
 
     public Window() {
 
@@ -76,6 +77,13 @@ public class Window {
 
     public Vector2i getSize() {
         return size.get();
+    }
+
+    public void setSize(Vector2i size) {
+        this.size.set(size);
+        queue.addLast(() -> {
+            glfwSetWindowSize(window, size.x, size.y);
+        });
     }
 
     public Vector2i getPosition() {

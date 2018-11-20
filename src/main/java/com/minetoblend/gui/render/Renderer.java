@@ -1,4 +1,5 @@
 package com.minetoblend.gui.render;
 
-public class Renderer {
+public abstract class Renderer {
+    public abstract void init();
 }
